@@ -719,7 +719,7 @@ public class CloudGenerator {
         File[] accounts = accountsDir.listFiles();
 
         for (File account : accounts) {
-            if (account.getName().equals("last.txt") || account.getName().endsWith(".hasCommits")
+            if ("last.txt".equals(account.getName()) || account.getName().endsWith(".hasCommits")
                     || account.getName().endsWith(".noHasCommits")) continue;
             String json = readJson(account, true);
             if (json.trim().length() == 0) continue;
