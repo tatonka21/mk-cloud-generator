@@ -1,3 +1,4 @@
+import io.github.pixee.security.BoundedLineReader;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
@@ -443,7 +444,7 @@ public class CloudGenerator {
                         new InputStreamReader(
                                 new URL(url).openStream(), "UTF-8"));
                 FileWriter fw = new FileWriter(new File(dir, String.valueOf(i)));
-                reader.readLine();
+                BoundedLineReader.readLine(reader, 5_000_000);
                 int read = -1;
                 char[] data = new char[10240];
                 StringBuffer sb = new StringBuffer();
@@ -594,9 +595,9 @@ public class CloudGenerator {
         BufferedReader br = new BufferedReader(new FileReader(new File(CLOUD_DATA_OUTPUT)));
         PreparedStatement ps1 = conn.prepareStatement("select name, username, filter, commits from cloud_data where id = ?;");
         PreparedStatement ps2 = connMetadata.prepareStatement("insert into metadata (id, name, username, filter, commits, x, y, w, h, r, fs) values (?,?,?,?,?,?,?,?,?,?,?);");
-        String line = br.readLine();
+        String line = BoundedLineReader.readLine(br, 5_000_000);
         int fillId = -1000;
-        while ((line = br.readLine()) != null) {
+        while ((line = BoundedLineReader.readLine(br, 5_000_000)) != null) {
             String[] data = line.split(",");
             int id = Integer.parseInt(data[0]);
             int x = Integer.parseInt(data[1]);
@@ -907,7 +908,7 @@ public class CloudGenerator {
             project = project.substring(0, project.lastIndexOf("/"));
             BufferedReader br = new BufferedReader(new FileReader(stats));
             String line = null;
-            while ((line = br.readLine()) != null) {
+            while ((line = BoundedLineReader.readLine(br, 5_000_000)) != null) {
                 try {
                 	int commits = Integer.parseInt(line.substring(0, line.indexOf("\t")).trim());
                 	String name = cleanup(line.substring(line.indexOf("\t")+1,line.lastIndexOf("<")).trim());
@@ -950,7 +951,7 @@ public class CloudGenerator {
             project = project.substring(0, project.lastIndexOf("/"));
             BufferedReader br = new BufferedReader(new FileReader(stats));
             String line = null;
-            while ((line = br.readLine()) != null) {
+            while ((line = BoundedLineReader.readLine(br, 5_000_000)) != null) {
                 int commits = Integer.parseInt(line.substring(0, line.indexOf("\t")).trim());
                 String name = cleanup(line.substring(line.indexOf("\t")+1,line.lastIndexOf("<")).trim());
                 String email = cleanup(line.substring(line.lastIndexOf("<")+1, line.length()-1).trim());
@@ -985,7 +986,7 @@ public class CloudGenerator {
         String line = null;
         List<Account> accounts = new ArrayList<>();
         int i = 1;
-        while ((line = br.readLine()) != null) {
+        while ((line = BoundedLineReader.readLine(br, 5_000_000)) != null) {
             if (line.length() == 0) continue;
             String[] fields = line.split("\\|");
             Account acc = new Account();
@@ -1092,7 +1093,7 @@ public class CloudGenerator {
         final List<WordFrequency> wordFrequencies = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new FileReader(CLOUD_DATA));
         String line = null;
-        while ((line = reader.readLine()) != null) {
+        while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
             String record = line.trim();
             if (record.length() > 0) {
                 int pos = record.indexOf(",");
@@ -1192,8 +1193,8 @@ public class CloudGenerator {
 
         BufferedReader br = new BufferedReader(new FileReader(CLOUD_DATA_OUTPUT));
         String line=null;
-        br.readLine();
-        while ((line = br.readLine()) != null) {
+        BoundedLineReader.readLine(br, 5_000_000);
+        while ((line = BoundedLineReader.readLine(br, 5_000_000)) != null) {
             int lastIndex = 0;
             int index = line.indexOf(',', lastIndex);
             lastIndex = index+1;
@@ -1257,7 +1258,7 @@ public class CloudGenerator {
         }
         BufferedReader br = new BufferedReader(new FileReader(file));
         try {
-            return Integer.parseInt(br.readLine());
+            return Integer.parseInt(BoundedLineReader.readLine(br, 5_000_000));
         } catch (Exception ex) {
         } finally {
             br.close();
