@@ -1,3 +1,5 @@
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
@@ -441,7 +443,7 @@ public class CloudGenerator {
 
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(
-                                new URL(url).openStream(), "UTF-8"));
+                                Urls.create(url, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS).openStream(), "UTF-8"));
                 FileWriter fw = new FileWriter(new File(dir, String.valueOf(i)));
                 reader.readLine();
                 int read = -1;
@@ -1071,7 +1073,7 @@ public class CloudGenerator {
             }
             url = "https://review.mfunz.com/changes/?q=status:merged+owner:\"" + owner+ "\"&limit=1";
             owner = URLEncoder.encode(owner, "UTF-8");
-            is = new URL("https://review.mfunz.com/changes/?q=status:merged+owner:\"" + owner+ "\"&limit=1").openStream();
+            is = Urls.create("https://review.mfunz.com/changes/?q=status:merged+owner:\"" + owner+ "\"&limit=1", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS).openStream();
             byte[] data = new byte[11];
             int read = is.read(data);
             LOGGER.info ("Fetched " + url + ": " + (read > 8));
