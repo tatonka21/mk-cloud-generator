@@ -1,6 +1,7 @@
 package wordcloud.palette;
 
 import java.awt.*;
+import java.security.SecureRandom;
 import java.util.Random;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Random;
  */
 public class ColorPalette {
 
-    private static final Random RANDOM = new Random();
+    private static final Random RANDOM = new SecureRandom();
 
 
     private final Color[] colors;
