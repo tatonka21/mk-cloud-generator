@@ -1,3 +1,4 @@
+import java.nio.file.Files;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
@@ -1267,7 +1268,7 @@ public class CloudGenerator {
 
     private static void writeLastCloudSize(int size) throws Exception {
         File file = new File(LAST_CLOUD_SIZE);
-        BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+        BufferedWriter bw = Files.newBufferedWriter(file.toPath());
         bw.write(String.valueOf(size));
         bw.close();
     }
